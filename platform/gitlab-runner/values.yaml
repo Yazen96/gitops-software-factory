@@ -1,0 +1,41 @@
+gitlabUrl: "http://gitlab.local"
+runnerRegistrationToken: "GR1348941n8t6ZV8w5jzUCo9iWgQv"
+
+rbac:
+  create: true
+
+serviceAccount:
+  create: true
+  name: gitlab-runner
+
+runners:
+  executor: "kubernetes"
+  namespace: "ci-jobs"
+  tags: "k8s"
+  runUntagged: false
+  privileged: true  # REQUIRED for Buildah
+
+  config: |
+    [[runners]]
+      name = "k8s-runner"
+      url = "http://gitlab.local"
+      token = "GR1348941n8t6ZV8w5jzUCo9iWgQv"
+      executor = "kubernetes"
+      [runners.kubernetes]
+        image = "debian:bookworm"  # ✅ Suitable for Buildah
+        namespace = "ci-jobs"
+        privileged = true
+        host_aliases = [
+          { ip = "10.132.40.2", hostnames = ["gitlab.local", "registry.local"] }
+        ]
+
+  kubernetes:
+    image: "debian:bookworm"
+    namespace: "ci-jobs"
+    privileged: true
+
+hostAliases:
+  - ip: "10.132.40.2"
+    hostnames:
+      - "gitlab.local"
+      - "registry.local"

@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app3
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/bonfire-cloud/Lia.git
+    targetRevision: yaz-dev-branch
+    path: helm/app3-chart
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: app3
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+    syncOptions:
+      - CreateNamespace=true

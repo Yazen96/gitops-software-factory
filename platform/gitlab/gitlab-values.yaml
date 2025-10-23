@@ -1,0 +1,28 @@
+global:
+  edition: ce
+  hosts:
+    # Vi använder "namn" istället för domain-magi så du får precis de hostnames du vill.
+    gitlab:
+      name: gitlab.local
+      https: false
+    registry:
+      name: registry.local
+      https: false
+    ssh: git-ssh.local          # separat hostname för SSH (pekar mot gitlab-shell LB-IP)
+    https: false
+  ingress:
+    provider: nginx
+    class: nginx                # rikta Ingress-resurser till din existerande NGINX
+    enabled: true
+    tls:
+      enabled: false            # börja utan cert i labbet
+    configureCertmanager: false # vi använder inte chartets auto-cert nu
+  shell:
+    port: 22                    # SSH-port
+nginx-ingress:
+  enabled: false                # vi har redan en extern ingress-controller
+
+gitlab:
+  gitlab-shell:
+    service:
+      type: ClusterIP        # enklast för SSH i k3s/MetalLB
